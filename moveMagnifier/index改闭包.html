@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>鼠标跟随图片</title>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		#content{
+			width:1000px;
+			height:200px;
+			margin:0 auto;
+		}
+		.pic{
+			width:172px;
+			height:172px;
+			margin:10px 10px;
+			float:left;
+			border:1px solid #ddd;
+		}
+		.pic:hover{
+			border:1px solid red;
+			cursor:pointer;
+		}
+		#big{
+			width:400px;
+			height:400px;
+			display:none;
+			position: absolute;
+			border:3px solid #ddd;
+		}
+	</style>
+</head>
+<body>
+	<div id = "content">
+		<div class="pic">
+			<img src = "img/0.jpg"></img>
+		</div>
+		<div class="pic">
+			<img src = "img/1.jpg"></img>
+		</div>
+		<div class="pic">
+			<img src = "img/2.jpg"></img>
+		</div>
+		<div class="pic">
+			<img src = "img/3.jpg"></img>
+		</div>
+		<div id="big">	
+		</div>
+	</div>
+<script>
+	window.onload = function(){
+		var img = document.getElementsByTagName("img");
+		var big = document.getElementById("big");
+		for(let i=0; i<=3;i++){
+			img[i].onmouseover = function(){
+				big.style.display = "block";
+				big.style.background = "url(img/"+ i + ".jpg) no-repeat"
+				//"url(img/1.jpg) no-repeat"
+				big.style.backgroundSize = "100% 100%"
+				this.onmousemove = function(){
+					var e = e || window.event
+					big.style.left = parseInt(e.clientX+3) + "px";
+					big.style.top = parseInt(e.clientY+3) + "px";
+				}
+			}
+			img[i].onmouseout = function(){
+				big.style.display = "none";
+			}
+		}
+
+	}
+</script>
+</body>
+</html>
