@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+		#outer{
+			height:600px;
+		}
+		.table{
+			width:440px;
+			height:20px;
+			border:1px solid black;
+		}
+		.smallTable{
+			width:20px;
+			height:20px;
+			border:1px solid black;
+			display:inline-block;
+		}
+		.snake{
+			background:green;
+			width:20px;
+			height:20px;
+			border:1px solid black;
+			display:inline-block;
+		}
+		.food{
+			width:20px;
+			height:20px;
+			border:1px solid black;
+			display:inline-block;
+			background:red;
+		}
+	</style>
+	<title>snake</title>
+</head>
+<body>
+	<div id = "outer">
+		
+	</div>
+	<script type="text/javascript">
+		function createGame(level){		
+			var outer = document.getElementById("outer");
+			var foodX,foodY,snakeX,snakeY;
+			var direction = 'up';
+			var start = false;
+			var stop;
+			var all = {
+				area:[],
+				snake:[],
+			}
+
+			//执行
+			initTable();
+			initSnakeHead();
+			initFood();
+			gameStart();
+			
+			//监听键盘
+			document.onkeydown = function(e){
+				// if(start == false && e.keyCode == '37' || e.keyCode == '38' || e.keyCode == '39' || e.keyCode == '40'){
+				// 	start = true;
+				// 	gameStart();
+				// }
+				// else{
+				// 	return;
+				// }
+				if(direction == 'left' && e.keyCode == '39')
+					return;
+				if(direction == 'right' && e.keyCode == '37')
+					return;
+				if(direction == 'up' && e.keyCode == '40')
+					return;
+				if(direction == 'down' && e.keyCode == '38')
+					return;
+				switch(e.keyCode){
+					case 37:
+						direction = 'left';
+						break;
+					case 38:
+						direction = 'up';
+						break;
+					case 40:
+						direction = 'down';
+						break;
+					case 39:
+						direction = 'right';
+						break;
+				}
+			}
+
+			//生成地图
+			function initTable(){
+				for(var i = 0; i < 20 ; i++){
+					var div = document.createElement("div");
+					div.setAttribute('class','table');					
+					outer.appendChild(div);
+					all.area.push([])
+					for(var j = 0; j < 20 ;j++){
+						var divx = document.createElement("i");
+						divx.setAttribute('class','smallTable');
+						div.appendChild(divx);
+						divx.status = '0';
+						all.area[i].push(divx);
+					}
+				}
+			}
+			//生成食物
+			function initFood(){
+				var x = Math.floor(Math.random()*20);
+				var y = Math.floor(Math.random()*20);
+				for(var i in all.snake){
+					if(all.area[x][y] == all.snake[i]){
+						initFood();
+						return;
+					}
+					else{
+						all.area[x][y].setAttribute('class','food');
+						foodX = x;
+						foodY = y;
+					}
+				}
+			}
+
+			//生成蛇头
+			function initSnakeHead(){
+				var x = Math.floor(Math.random()*20);
+				var y = Math.floor(Math.random()*20);
+				if(x == foodX && y == foodY)
+					initSnakeHead();
+				else{
+					all.area[x][y].setAttribute('class','snake');
+					all.snake.push(all.area[x][y]);
+					snakeX = x;
+					snakeY = y;
+				}
+			}
+
+			//移动蛇
+			function snakeMove(){
+				switch(direction){
+					case 'left':
+						snakeY--;
+						break;
+					case 'right':
+						snakeY++;
+						break;
+					case 'up':
+						snakeX--;
+						break;
+					case 'down':
+						snakeX++;
+						break;					
+				}
+				if(snakeX >= 20 || snakeY >= 20 || snakeX < 0 || snakeY < 0){
+					clearInterval(stop);
+					alert('游戏结束，你个菜逼');
+					return;
+				}
+				for(var i in all.snake){
+					if(all.area[snakeX][snakeY] == all.snake[i]){
+						clearInterval(stop);
+						alert('游戏结束,你个菜逼');
+						return;
+					}
+				}
+				if(snakeX == foodX && snakeY == foodY){
+					all.snake.push(all.area[snakeX][snakeY]);
+					all.area[snakeX][snakeY].setAttribute('class','snake');
+					initFood();
+				}
+				else{
+					all.snake.push(all.area[snakeX][snakeY]);
+					all.area[snakeX][snakeY].setAttribute('class','snake');
+					all.snake[0].setAttribute('class','smallTable');
+					all.snake.shift();
+				}
+			}
+
+			function gameStart(){
+				stop = setInterval(snakeMove,200);
+			}
+		}
+		createGame();
+	</script>
+</body>
+</html>
